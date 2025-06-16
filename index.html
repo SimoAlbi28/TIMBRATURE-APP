@@ -1,39 +1,45 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Timbrature Lavoro</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#317EFB"/>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#317EFB" />
 </head>
 <body>
-  <h1>🏢 Timbrature Lavoro 🏢</h1>
+  <h1>🏢 Timbrature Lavoro 🏢</h1><br><br>
 
   <div class="pulsanti-home">
     <button id="btnEntrata">Entrata Veloce</button>
     <button id="btnUscita">Uscita Veloce</button>
     <button id="btnPersonalizza">🛠️ Personalizza</button>
+  </div><br><br>
+
+  <div id="filtroDataContainer" style="margin: 15px 0; text-align:center;">
+    <label for="filtroData">🔍 Cerca per data:</label>
+    <input type="date" id="filtroData" style="margin-left: 8px;" />
+    <button id="btnResetFiltro" style="margin-left:6px;">❌</button>
   </div>
 
   <div id="boxPersonalizza" style="display:none;">
     <form id="formTimbratura">
       <div class="box-form">
-        <label for="data">📅 Seleziona data:</label><br>
-        <input type="date" id="data" required><br><br>
+        <label for="data">📅 Seleziona data:</label><br />
+        <input type="date" id="data" required /><br /><br />
 
-        <label for="ora">⏰ Seleziona ora:</label><br>
-        <input type="time" id="ora" required><br><br>
+        <label for="ora">⏰ Seleziona ora:</label><br />
+        <input type="time" id="ora" required /><br /><br />
 
-        <label for="descrizione">📝 Descrizione (opzionale):</label><br>
-        <input type="text" id="descrizione"><br><br>
+        <label for="descrizione">📝 Descrizione (opzionale):</label><br />
+        <input type="text" id="descrizione" /><br /><br />
 
-        <label for="tipo">🔁 Tipo timbratura:</label><br>
+        <label for="tipo">🔁 Tipo timbratura:</label><br />
         <select id="tipo" required>
           <option value="">Seleziona</option>
           <option value="Entrata">Entrata</option>
           <option value="Uscita">Uscita</option>
-        </select><br><br>
+        </select><br /><br />
 
         <button type="submit" id="btnSalva">Salva</button>
         <button type="button" id="btnAnnulla" disabled>Annulla</button>
@@ -41,20 +47,18 @@
     </form>
   </div>
 
-  
-    <h2 class="riepilogo-titolo">⌚️ Riepilogo Orari ⌚️</h2>
-    <div id="riepilogo"></div>
+  <h2 class="riepilogo-titolo">⌚️ Riepilogo Orari ⌚️</h2>
+  <div id="riepilogo"></div>
 
   <script src="script.js"></script>
 
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('Service Worker registrato'))
-        .catch(err => console.log('Errore registrazione SW:', err));
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("service-worker.js")
+        .then(() => console.log("Service Worker registrato"))
+        .catch((err) => console.log("Errore registrazione SW:", err));
     }
   </script>
-  
-
 </body>
 </html>
