@@ -56,7 +56,7 @@ function aggiungiTimbratura(tipo) {
     data,
     ora,
     tipo,
-    descrizione: "(Nessuna descrizione)"
+    descrizione: ""
   };
   timbrature.push(nuova);
   salvaDati();
