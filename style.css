@@ -1,0 +1,134 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f2f2f2;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  /* ... tutto il CSS precedente resta invariato ... */
+  
+  .box-form label {
+    font-size: 18px;
+    font-weight: bold;
+    display: block;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  
+  .box-form input,
+  .box-form select {
+    display: block;
+    margin: 0 auto 15px auto;
+    font-size: 16px;
+    padding: 6px;
+    width: 90%;
+    max-width: 300px;
+  }
+  
+  h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+  
+  .riepilogo-titolo {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .pulsanti-home {
+    margin-bottom: 20px;
+  }
+  
+  button {
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  #btnEntrata {
+    background-color: green;
+    color: white;
+  }
+  
+  #btnUscita {
+    background-color: red;
+    color: white;
+  }
+  
+  #btnPersonalizza {
+    background-color: #5dade2;
+    color: white;
+  }
+  
+  #btnSalva {
+    background-color: green;
+    color: white;
+  }
+  
+  #btnAnnulla {
+    background-color: rgba(255, 0, 0, 0.6);
+    color: white;
+  }
+  
+  #btnAnnulla:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .box-form {
+    background-color: #ffffff;
+    border: 2px solid #ddd;
+    padding: 15px;
+    margin: 0 auto 20px auto;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 10px;
+    text-align: left;
+  }
+  
+  #riepilogo .card {
+    background-color: #fff;
+    border: 2px solid #ccc;
+    padding: 10px;
+    margin: 15px auto;
+    width: 95%;
+    max-width: 500px;
+    border-radius: 10px;
+    text-align: left;
+  }
+  
+  #riepilogo h3 {
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  #riepilogo p {
+    font-size: 16px;
+    margin: 8px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .azioni button {
+    font-size: 12px;
+    margin-left: 6px;
+    padding: 4px 6px;
+  }
+  
+  .modifica {
+    background-color: #5dade2;
+    color: white;
+  }
+  
+  .elimina {
+    background-color: red;
+    color: white;
+  }
