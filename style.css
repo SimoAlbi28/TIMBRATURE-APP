@@ -5,7 +5,7 @@ body {
   background-size: cover;
   background-attachment: fixed;
   padding: 20px;
-  filter: brightness(150%);
+  filter: brightness(120%);
   text-align: center;
   overflow-x: hidden;
   z-index: 0;
