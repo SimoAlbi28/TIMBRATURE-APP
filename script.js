@@ -40,13 +40,18 @@ formTimbratura.onsubmit = (e) => {
   const tipo = document.getElementById("tipo").value;
   const descrizione = document.getElementById("descrizione").value;
 
-  const dateTime = new Date(`${data}T${ora}`);
+  if (!data || !ora || !tipo) {
+    alert("Compila tutti i campi obbligatori!");
+    return;
+  }
 
   if (modificaIndex >= 0) {
     timbrature[modificaIndex] = { data: data, ora: ora, tipo, descrizione };
   } else {
     timbrature.push({ data: data, ora: ora, tipo, descrizione });
   }
+
+  salvaLocalStorage();
 
   modificaIndex = -1;
   formTimbratura.reset();
@@ -67,6 +72,7 @@ function aggiungiTimbratura(date, tipo, descrizione) {
   const data = date.toISOString().slice(0, 10);
   const ora = date.toTimeString().slice(0, 5);
   timbrature.push({ data, ora, tipo, descrizione });
+  salvaLocalStorage();
   mostraRiepilogo();
   boxPersonalizza.style.display = "none";
 }
@@ -87,12 +93,12 @@ function mostraRiepilogo() {
     const card = document.createElement("div");
     card.className = "card";
 
-    // cambio qui: formatto la data da 'aaaa-mm-gg' a 'gg/mm/aaaa'
+    // formatto la data da 'aaaa-mm-gg' a 'gg/mm/aaaa'
     const [yyyy, mm, gg] = data.split("-");
     const dataFormattata = `${gg}/${mm}/${yyyy}`;
 
     const titolo = document.createElement("h3");
-    titolo.textContent = dataFormattata;  // uso la data formattata
+    titolo.textContent = dataFormattata;
     card.appendChild(titolo);
 
     ["Entrata", "Uscita"].forEach(tipo => {
@@ -115,6 +121,7 @@ function mostraRiepilogo() {
         btnDel.textContent = "Elimina";
         btnDel.onclick = () => {
           timbrature = timbrature.filter(tt => tt !== t);
+          salvaLocalStorage();
           mostraRiepilogo();
         };
 
@@ -152,3 +159,6 @@ if ('serviceWorker' in navigator) {
     .then(() => console.log('✅ Service Worker registrato!'))
     .catch(err => console.error('❌ Errore nel Service Worker:', err));
 }
+
+// All'avvio mostra subito il riepilogo
+mostraRiepilogo();
