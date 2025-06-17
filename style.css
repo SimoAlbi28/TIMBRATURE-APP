@@ -1,6 +1,8 @@
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: #f2f2f2;
+  background-image: url('./img/bg_tempo.avif'); 
+  background-size: cover;
+  background-attachment: fixed;
   padding: 20px;
   text-align: center;
 }
@@ -11,6 +13,7 @@ body {
   display: block;
   text-align: center;
   margin-bottom: 6px;
+  font-family: cursive;
 }
 
 .box-form input,
@@ -21,11 +24,13 @@ body {
   padding: 6px;
   width: 90%;
   max-width: 300px;
+  font-family: cursive;
 }
 
 h1 {
   font-size: 50px;
   margin-bottom: 20px;
+  font-family: cursive;
 }
 
 .riepilogo-titolo {
@@ -35,10 +40,12 @@ h1 {
   margin-top: 30px;
   margin-bottom: 20px;
   color: #333;
+  font-family: cursive;
 }
 
 .pulsanti-home {
   margin-bottom: 20px;
+  font-family: cursive;
 }
 
 button {
@@ -48,31 +55,52 @@ button {
   border-radius: 6px;
   font-size: 16px;
   cursor: pointer;
+  font-family: cursive;
 }
 
 #btnEntrata {
-  background-color: green;
+  background-color: rgb(23, 184, 23);
   color: white;
+}
+
+#btnEntrata:hover {
+  background-color: rgb(21, 247, 0);
 }
 
 #btnUscita {
-  background-color: red;
+  background-color: rgb(202, 2, 2);
   color: white;
+}
+
+#btnUscita:hover {
+  background-color: rgb(255, 35, 35);
 }
 
 #btnPersonalizza {
-  background-color: #5dade2;
+  background-color: #1999ee;
   color: white;
+}
+
+#btnPersonalizza:hover {
+  background-color: rgb(0, 239, 247);
 }
 
 #btnSalva {
-  background-color: green;
+  background-color: rgb(23, 184, 23);
   color: white;
 }
 
+#btnSalva:hover {
+  background-color: rgb(21, 247, 0);
+}
+
 #btnAnnulla {
-  background-color: rgba(255, 0, 0, 0.6);
+  background-color: rgb(202, 2, 2);
   color: white;
+}
+
+#btnAnnulla:hover {
+  background-color: rgb(255, 35, 35);
 }
 
 #btnAnnulla:disabled {
@@ -89,22 +117,25 @@ button {
   max-width: 400px;
   border-radius: 10px;
   text-align: left;
+  font-family: cursive;
 }
 
 #riepilogo .card {
-  background-color: #fff;
-  border: 2px solid #ccc;
+  background-color: #ffffff;
+  border: 2px solid #000000;
   padding: 10px;
   margin: 15px auto;
   width: 95%;
   max-width: 500px;
   border-radius: 10px;
   text-align: left;
+  font-family: cursive;
 }
 
 #riepilogo h3 {
   text-align: center;
   font-weight: bold;
+  font-family: cursive;
 }
 
 #riepilogo p {
@@ -113,27 +144,38 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-family: cursive;
 }
 
 .azioni button {
   font-size: 12px;
   margin-left: 6px;
   padding: 4px 6px;
+  font-family: cursive;
 }
 
 .modifica {
-  background-color: #5dade2;
+  background-color: #1999ee;
   color: white;
 }
 
+.modifica:hover {
+  background-color: rgb(0, 239, 247);
+}
+
 .elimina {
-  background-color: red;
+  background-color: rgb(202, 2, 2);
   color: white;
+}
+
+.elimina:hover {
+  background-color: red;
 }
 
 #filtroDataContainer label {
   font-weight: bold;
   font-size: 18px;
+  font-family: cursive;
 }
 
 #filtroData {
@@ -141,10 +183,11 @@ button {
   font-size: 16px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  font-family: cursive;
 }
 
 #btnResetFiltro {
-  background-color: #d9534f;
+  background-color: #b60903;
   color: white;
   border-radius: 5px;
   padding: 5px 10px;
@@ -152,10 +195,11 @@ button {
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  font-family: cursive;
 }
 
 #btnResetFiltro:hover {
-  background-color: #c9302c;
+  background-color: #ff0800;
 }
 
 #contaCaratteri {
@@ -164,4 +208,5 @@ button {
   margin-top: -10px;
   margin-bottom: 10px;
   text-align: center;
+  font-family: cursive;
 }

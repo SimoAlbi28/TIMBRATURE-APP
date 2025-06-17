@@ -22,7 +22,6 @@ btnUscita.onclick = () => aggiungiTimbratura(new Date(), "Uscita", "");
 btnPersonalizza.onclick = () => {
   boxPersonalizza.style.display = boxPersonalizza.style.display === "none" ? "block" : "none";
   formTimbratura.reset();
-  btnAnnulla.disabled = true;
   modificaIndex = -1;
   contaCaratteri.innerText = "0/30 caratteri";
 };
@@ -30,7 +29,6 @@ btnPersonalizza.onclick = () => {
 descrizioneInput.addEventListener("input", () => {
   const len = descrizioneInput.value.length;
   contaCaratteri.innerText = `${len}/30 caratteri`;
-  btnAnnulla.disabled = len === 0 && modificaIndex === -1;
 });
 
 formTimbratura.onsubmit = (e) => {
@@ -39,11 +37,6 @@ formTimbratura.onsubmit = (e) => {
   const ora = document.getElementById("ora").value;
   const tipo = document.getElementById("tipo").value;
   const descrizione = document.getElementById("descrizione").value;
-
-  if (!data || !ora || !tipo) {
-    alert("Compila tutti i campi obbligatori!");
-    return;
-  }
 
   if (modificaIndex >= 0) {
     timbrature[modificaIndex] = { data: data, ora: ora, tipo, descrizione };
@@ -63,7 +56,6 @@ formTimbratura.onsubmit = (e) => {
 btnAnnulla.onclick = () => {
   formTimbratura.reset();
   contaCaratteri.innerText = "0/30 caratteri";
-  btnAnnulla.disabled = true;
   modificaIndex = -1;
   boxPersonalizza.style.display = "none";
 };
@@ -71,10 +63,30 @@ btnAnnulla.onclick = () => {
 function aggiungiTimbratura(date, tipo, descrizione) {
   const data = date.toISOString().slice(0, 10);
   const ora = date.toTimeString().slice(0, 5);
-  timbrature.push({ data, ora, tipo, descrizione });
+
+  // Cerca se esiste già una timbratura dello stesso tipo per la stessa data
+  const indexEsistente = timbrature.findIndex(t => t.data === data && t.tipo === tipo);
+
+  if (indexEsistente >= 0) {
+    // Se esiste, aggiorna
+    timbrature[indexEsistente].ora = ora;
+    timbrature[indexEsistente].descrizione = descrizione;
+  } else {
+    // Se non esiste, aggiungi nuova timbratura
+    timbrature.push({ data, ora, tipo, descrizione });
+  }
+
   salvaLocalStorage();
   mostraRiepilogo();
   boxPersonalizza.style.display = "none";
+}
+
+
+// Funzione helper per parsare bene data e ora anche se ora è tipo "8:30"
+function parseDateTime(data, ora) {
+  if (!ora.includes(':')) return new Date(`${data}T00:00:00`);
+  if (ora.length === 4) ora = '0' + ora; // "8:30" -> "08:30"
+  return new Date(`${data}T${ora}:00`);
 }
 
 function mostraRiepilogo() {
@@ -89,52 +101,82 @@ function mostraRiepilogo() {
     perData[t.data].push(t);
   });
 
-  Object.keys(perData).sort().forEach(data => {
-    const card = document.createElement("div");
-    card.className = "card";
+  Object.keys(perData)
+    .sort((a, b) => new Date(b) - new Date(a))
+    .forEach(data => {
+      const card = document.createElement("div");
+      card.className = "card";
 
-    // formatto la data da 'aaaa-mm-gg' a 'gg/mm/aaaa'
-    const [yyyy, mm, gg] = data.split("-");
-    const dataFormattata = `${gg}/${mm}/${yyyy}`;
+      const [yyyy, mm, gg] = data.split("-");
+      const dataFormattata = `${gg}/${mm}/${yyyy}`;
 
-    const titolo = document.createElement("h3");
-    titolo.textContent = dataFormattata;
-    card.appendChild(titolo);
+      const titolo = document.createElement("h3");
+      titolo.textContent = dataFormattata;
+      titolo.style.backgroundColor = "yellow";  // evidenzi in giallo
+      card.appendChild(titolo);
+      const separatore = document.createElement("hr");
+      separatore.style.border = "1px solid black";
+      card.appendChild(separatore);
 
-    ["Entrata", "Uscita"].forEach(tipo => {
-      const t = perData[data].find(e => e.tipo === tipo);
-      if (t) {
-        const p = document.createElement("p");
-        const span = document.createElement("span");
-        span.innerHTML = `<strong style="color:${tipo === "Entrata" ? "green" : "red"}">${tipo.toUpperCase()}</strong> ${t.ora} ${t.descrizione ? `(${t.descrizione})` : ""}`;
+      let entrataObj = perData[data].find(e => e.tipo === "Entrata");
+      let uscitaObj = perData[data].find(e => e.tipo === "Uscita");
 
-        const azioni = document.createElement("span");
-        azioni.className = "azioni";
+      ["Entrata", "Uscita"].forEach(tipo => {
+        const t = perData[data].find(e => e.tipo === tipo);
+        if (t) {
+          const p = document.createElement("p");
+          const span = document.createElement("span");
+          span.innerHTML = `<strong style="color:${tipo === "Entrata" ? "green" : "red"}">${tipo.toUpperCase()}</strong> ${t.ora} ${t.descrizione ? `(${t.descrizione})` : ""}`;
 
-        const btnMod = document.createElement("button");
-        btnMod.className = "modifica";
-        btnMod.textContent = "Modifica";
-        btnMod.onclick = () => modificaTimbratura(t);
+          const azioni = document.createElement("span");
+          azioni.className = "azioni";
 
-        const btnDel = document.createElement("button");
-        btnDel.className = "elimina";
-        btnDel.textContent = "Elimina";
-        btnDel.onclick = () => {
-          timbrature = timbrature.filter(tt => tt !== t);
-          salvaLocalStorage();
-          mostraRiepilogo();
-        };
+          const btnMod = document.createElement("button");
+          btnMod.className = "modifica";
+          btnMod.textContent = "Modifica";
+          btnMod.onclick = () => modificaTimbratura(t);
 
-        azioni.appendChild(btnMod);
-        azioni.appendChild(btnDel);
-        p.appendChild(span);
-        p.appendChild(azioni);
-        card.appendChild(p);
+          const btnDel = document.createElement("button");
+          btnDel.className = "elimina";
+          btnDel.textContent = "Elimina";
+          btnDel.onclick = () => {
+          const index = timbrature.indexOf(t);
+          if (index >= 0) {
+            timbrature.splice(index, 1);
+            salvaLocalStorage();
+            mostraRiepilogo();
+            }
+          };
+
+          azioni.appendChild(btnMod);
+          azioni.appendChild(btnDel);
+          p.appendChild(span);
+          p.appendChild(azioni);
+          card.appendChild(p);
+        }
+      });
+
+      if (entrataObj && uscitaObj) {
+        const inTime = parseDateTime(entrataObj.data, entrataObj.ora);
+        const outTime = parseDateTime(uscitaObj.data, uscitaObj.ora);
+        let diffMs = outTime - inTime;
+        if (diffMs < 0) diffMs = 0;
+
+        const diffH = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffM = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+        const totOre = document.createElement("p");
+        totOre.style.fontWeight = "bold";
+        totOre.style.marginTop = "10px";
+        const separatore = document.createElement("hr");
+        separatore.style.border = "1px solid black";
+        card.appendChild(separatore);
+        totOre.textContent = `⏳ Totale ore - min di lavoro: ${diffH}h ${diffM}m`;
+        card.appendChild(totOre);
       }
-    });
 
-    riepilogo.appendChild(card);
-  });
+      riepilogo.appendChild(card);
+    });
 }
 
 function modificaTimbratura(t) {

@@ -8,20 +8,20 @@
   <link rel="manifest" href="manifest.json" />
 </head>
 <body>
-  <h1>🕒 Timbrature 🕒</h1>
+  <h1>🏢 TIMBRATURE 🏢</h1><br>
 
   <div class="pulsanti-home">
     <button id="btnEntrata">Entrata</button>
     <button id="btnUscita">Uscita</button>
     <button id="btnPersonalizza">➕ Personalizza</button>
-  </div>
+  </div><br>
 
   <div id="boxPersonalizza" class="box-form" style="display: none">
     <form id="formTimbratura">
       <label for="data">📅 Data</label>
       <input type="date" id="data" required />
 
-      <label for="ora">⏰ Ora</label>
+      <label for="ora">⌚ Ora</label>
       <input type="time" id="ora" required />
 
       <label for="tipo">🔁 Tipo</label>
@@ -31,13 +31,13 @@
         <option value="Uscita">Uscita</option>
       </select>
 
-      <label for="descrizione">📝 Descrizione (max 30)</label>
+      <label for="descrizione">📝 Descrizione</label>
       <input type="text" id="descrizione" maxlength="30" />
       <p id="contaCaratteri" style="text-align:center; font-size:14px;">0/30 caratteri</p>
 
       <div style="text-align:center">
         <button type="submit" id="btnSalva">Salva</button>
-        <button type="button" id="btnAnnulla" disabled>Annulla</button>
+        <button type="button" id="btnAnnulla">Annulla</button>
       </div>
     </form>
   </div>
