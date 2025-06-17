@@ -1,4 +1,8 @@
-let timbrature = [];
+let timbrature = JSON.parse(localStorage.getItem('timbrature')) || [];
+
+function salvaLocalStorage() {
+  localStorage.setItem('timbrature', JSON.stringify(timbrature));
+}
 
 const btnEntrata = document.getElementById("btnEntrata");
 const btnUscita = document.getElementById("btnUscita");
