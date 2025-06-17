@@ -4,6 +4,13 @@ function salvaLocalStorage() {
   localStorage.setItem('timbrature', JSON.stringify(timbrature));
 }
 
+function getDataGGMMYYYY(date) {
+  const dd = String(date.getDate()).padStart(2, '0');
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const yyyy = date.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+}
+
 const btnEntrata = document.getElementById("btnEntrata");
 const btnUscita = document.getElementById("btnUscita");
 const btnPersonalizza = document.getElementById("btnPersonalizza");
@@ -44,15 +51,18 @@ descrizioneInput.addEventListener("input", () => {
 
 formTimbratura.onsubmit = (e) => {
   e.preventDefault();
-  const data = document.getElementById("data").value;
+  const dataInput = document.getElementById("data").value;
   const ora = document.getElementById("ora").value;
   const tipo = document.getElementById("tipo").value;
   const descrizione = document.getElementById("descrizione").value;
 
+  const [yyyy, mm, dd] = dataInput.split("-");
+  const data = `${dd}/${mm}/${yyyy}`;
+
   if (modificaIndex >= 0) {
-    timbrature[modificaIndex] = { data: data, ora: ora, tipo, descrizione };
+    timbrature[modificaIndex] = { data, ora, tipo, descrizione };
   } else {
-    timbrature.push({ data: data, ora: ora, tipo, descrizione });
+    timbrature.push({ data, ora, tipo, descrizione });
   }
 
   salvaLocalStorage();
@@ -74,7 +84,7 @@ btnAnnulla.onclick = () => {
 };
 
 function aggiungiTimbratura(date, tipo, descrizione) {
-  const data = date.toISOString().slice(0, 10);
+  const data = getDataGGMMYYYY(date);
   const ora = date.toTimeString().slice(0, 5);
 
   const indexEsistente = timbrature.findIndex(t => t.data === data && t.tipo === tipo);
@@ -92,16 +102,22 @@ function aggiungiTimbratura(date, tipo, descrizione) {
 }
 
 function parseDateTime(data, ora) {
-  if (!ora.includes(':')) return new Date(`${data}T00:00:00`);
-  if (ora.length === 4) ora = '0' + ora;
-  return new Date(`${data}T${ora}:00`);
+  const [gg, mm, yyyy] = data.split("/");
+  const isoDate = `${yyyy}-${mm}-${gg}T${ora || "00:00"}:00`;
+  return new Date(isoDate);
 }
 
 function mostraRiepilogo() {
   const riepilogo = document.getElementById("riepilogo");
   riepilogo.innerHTML = "";
 
-  const filtrate = filtroData.value ? timbrature.filter(t => t.data === filtroData.value) : timbrature;
+  const filtrate = filtroData.value
+    ? timbrature.filter(t => {
+        const [yyyy, mm, dd] = filtroData.value.split("-");
+        const dataFiltro = `${dd}/${mm}/${yyyy}`;
+        return t.data === dataFiltro;
+      })
+    : timbrature;
 
   const perData = {};
   filtrate.forEach(t => {
@@ -110,16 +126,17 @@ function mostraRiepilogo() {
   });
 
   Object.keys(perData)
-    .sort((a, b) => new Date(b) - new Date(a))
+    .sort((a, b) => {
+      const [ggA, mmA, yyyyA] = a.split("/");
+      const [ggB, mmB, yyyyB] = b.split("/");
+      return new Date(`${yyyyB}-${mmB}-${ggB}`) - new Date(`${yyyyA}-${mmA}-${ggA}`);
+    })
     .forEach(data => {
       const card = document.createElement("div");
       card.className = "card";
 
-      const [yyyy, mm, gg] = data.split("-");
-      const dataFormattata = `${gg}/${mm}/${yyyy}`;
-
       const titolo = document.createElement("h3");
-      titolo.textContent = dataFormattata;
+      titolo.textContent = data;
       titolo.style.backgroundColor = "yellow";
       card.appendChild(titolo);
       const separatore = document.createElement("hr");
@@ -188,7 +205,8 @@ function mostraRiepilogo() {
 }
 
 function modificaTimbratura(t) {
-  document.getElementById("data").value = t.data;
+  const [gg, mm, yyyy] = t.data.split("/");
+  document.getElementById("data").value = `${yyyy}-${mm}-${gg}`;
   document.getElementById("ora").value = t.ora;
   document.getElementById("tipo").value = t.tipo;
   document.getElementById("descrizione").value = t.descrizione;
