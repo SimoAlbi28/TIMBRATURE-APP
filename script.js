@@ -126,7 +126,7 @@ function mostraRiepilogo() {
         if (t) {
           const p = document.createElement("p");
           const span = document.createElement("span");
-          span.innerHTML = `<strong style="color:${tipo === "Entrata" ? "green" : "red"}">${tipo.toUpperCase()}</strong> ${t.ora} ${t.descrizione ? `(${t.descrizione})` : ""}`;
+          span.innerHTML = `<strong style="color:${tipo === "Entrata" ? "rgb(21, 247, 0)" : "rgb(255, 35, 35)"}">${tipo.toUpperCase()}</strong> ${t.ora} ${t.descrizione ? `(${t.descrizione})` : ""}`;
 
           const azioni = document.createElement("span");
           azioni.className = "azioni";
