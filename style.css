@@ -1,7 +1,7 @@
 body {
   position: relative;
   font-family: 'Segoe UI', sans-serif;
-  background-image: url('./img/bg_tempo.avif'); 
+  background-image: url('./img/bg_tempo.avif');
   background-size: cover;
   background-attachment: fixed;
   padding: 20px;
@@ -14,13 +14,14 @@ body {
 body::before {
   content: "";
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: rgba(0, 0, 0, 0.5); /* più scuro con trasparenza 0.5 */
   pointer-events: none;
-  z-index: -1;  /* dietro tutto */
+  z-index: -1; /* dietro tutto */
 }
-
-
 
 .box-form label {
   font-size: 18px;
@@ -42,7 +43,7 @@ body::before {
 
 h1 {
   color: #fff; /* testo bianco per massima luminosità */
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.7); /* alone luminoso */;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.7); /* alone luminoso */
   font-size: 50px;
   margin-bottom: 20px;
 }
@@ -161,7 +162,7 @@ button {
 }
 
 #filtra {
-  color: rgb(153, 151, 151);
+  color: white;
 }
 
 .modifica {

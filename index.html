@@ -1,56 +1,58 @@
 <!DOCTYPE html>
 <html lang="it">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🕒 Timbrature Lavoro</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="manifest" href="manifest.json" />
-</head>
-<body>
-  <h1>🏢 TIMBRATURE 🏢</h1><br>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🕒 Timbrature Lavoro</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
+  </head>
+  <body>
+    <h1>🏢 TIMBRATURE 🏢</h1><br />
 
-  <div class="pulsanti-home">
-    <button id="btnEntrata">Entrata</button>
-    <button id="btnUscita">Uscita</button>
-    <button id="btnPersonalizza">➕ Personalizza</button>
-  </div><br>
+    <div class="pulsanti-home">
+      <button id="btnEntrata">Entrata</button>
+      <button id="btnUscita">Uscita</button>
+      <button id="btnPersonalizza">➕ Personalizza</button>
+    </div><br />
 
-  <div id="boxPersonalizza" class="box-form" style="display: none">
-    <form id="formTimbratura">
-      <label for="data">📅 Data</label>
-      <input type="date" id="data" required />
+    <div id="boxPersonalizza" class="box-form" style="display: none">
+      <form id="formTimbratura">
+        <label for="data">📅 Data</label>
+        <input type="date" id="data" required />
 
-      <label for="ora">⌚ Ora</label>
-      <input type="time" id="ora" required />
+        <label for="ora">⌚ Ora</label>
+        <input type="time" id="ora" required />
 
-      <label for="tipo">🔁 Tipo</label>
-      <select id="tipo" required>
-        <option value="">-- Seleziona --</option>
-        <option value="Entrata">Entrata</option>
-        <option value="Uscita">Uscita</option>
-      </select>
+        <label for="tipo">🔁 Tipo</label>
+        <select id="tipo" required>
+          <option value="">-- Seleziona --</option>
+          <option value="Entrata">Entrata</option>
+          <option value="Uscita">Uscita</option>
+        </select>
 
-      <label for="descrizione">📝 Descrizione</label>
-      <input type="text" id="descrizione" maxlength="30" />
-      <p id="contaCaratteri" style="text-align:center; font-size:14px;">0/30 caratteri</p>
+        <label for="descrizione">📝 Descrizione</label>
+        <input type="text" id="descrizione" maxlength="30" />
+        <p id="contaCaratteri" style="text-align:center; font-size:14px;">
+          0/30 caratteri
+        </p>
 
-      <div style="text-align:center">
-        <button type="submit" id="btnSalva">Salva</button>
-        <button type="button" id="btnAnnulla">Annulla</button>
-      </div>
-    </form>
-  </div>
+        <div style="text-align:center">
+          <button type="submit" id="btnSalva">Salva</button>
+          <button type="button" id="btnAnnulla">Annulla</button>
+        </div>
+      </form>
+    </div>
 
-  <div id="filtroDataContainer">
-    <label for="filtroData" id="filtra">🔍 Filtra per data : </label>
-    <input type="date" id="filtroData" />
-    <button id="btnResetFiltro">Reset</button>
-  </div>
+    <div id="filtroDataContainer">
+      <label for="filtroData" id="filtra">🔍 Filtra per data : </label>
+      <input type="date" id="filtroData" />
+      <button id="btnResetFiltro">Reset</button>
+    </div>
 
-  <h2 class="riepilogo-titolo">📋 Riepilogo</h2>
-  <div id="riepilogo"></div>
+    <h2 class="riepilogo-titolo">📋 Riepilogo</h2>
+    <div id="riepilogo"></div>
 
-  <script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>

@@ -14,8 +14,18 @@ const contaCaratteri = document.getElementById("contaCaratteri");
 const descrizioneInput = document.getElementById("descrizione");
 const filtroData = document.getElementById("filtroData");
 const btnResetFiltro = document.getElementById("btnResetFiltro");
+const btnSalva = document.getElementById("btnSalva");
 
 let modificaIndex = -1;
+
+function controllaSalvabilita() {
+  const dataVal = document.getElementById("data").value;
+  const oraVal = document.getElementById("ora").value;
+  btnSalva.disabled = !(dataVal && oraVal);
+}
+document.getElementById("data").addEventListener("input", controllaSalvabilita);
+document.getElementById("ora").addEventListener("input", controllaSalvabilita);
+controllaSalvabilita();
 
 btnEntrata.onclick = () => aggiungiTimbratura(new Date(), "Entrata", "");
 btnUscita.onclick = () => aggiungiTimbratura(new Date(), "Uscita", "");
@@ -24,6 +34,7 @@ btnPersonalizza.onclick = () => {
   formTimbratura.reset();
   modificaIndex = -1;
   contaCaratteri.innerText = "0/30 caratteri";
+  controllaSalvabilita();
 };
 
 descrizioneInput.addEventListener("input", () => {
@@ -51,6 +62,7 @@ formTimbratura.onsubmit = (e) => {
   contaCaratteri.innerText = "0/30 caratteri";
   boxPersonalizza.style.display = "none";
   mostraRiepilogo();
+  controllaSalvabilita();
 };
 
 btnAnnulla.onclick = () => {
@@ -58,21 +70,19 @@ btnAnnulla.onclick = () => {
   contaCaratteri.innerText = "0/30 caratteri";
   modificaIndex = -1;
   boxPersonalizza.style.display = "none";
+  controllaSalvabilita();
 };
 
 function aggiungiTimbratura(date, tipo, descrizione) {
   const data = date.toISOString().slice(0, 10);
   const ora = date.toTimeString().slice(0, 5);
 
-  // Cerca se esiste già una timbratura dello stesso tipo per la stessa data
   const indexEsistente = timbrature.findIndex(t => t.data === data && t.tipo === tipo);
 
   if (indexEsistente >= 0) {
-    // Se esiste, aggiorna
     timbrature[indexEsistente].ora = ora;
     timbrature[indexEsistente].descrizione = descrizione;
   } else {
-    // Se non esiste, aggiungi nuova timbratura
     timbrature.push({ data, ora, tipo, descrizione });
   }
 
@@ -81,11 +91,9 @@ function aggiungiTimbratura(date, tipo, descrizione) {
   boxPersonalizza.style.display = "none";
 }
 
-
-// Funzione helper per parsare bene data e ora anche se ora è tipo "8:30"
 function parseDateTime(data, ora) {
   if (!ora.includes(':')) return new Date(`${data}T00:00:00`);
-  if (ora.length === 4) ora = '0' + ora; // "8:30" -> "08:30"
+  if (ora.length === 4) ora = '0' + ora;
   return new Date(`${data}T${ora}:00`);
 }
 
@@ -112,7 +120,7 @@ function mostraRiepilogo() {
 
       const titolo = document.createElement("h3");
       titolo.textContent = dataFormattata;
-      titolo.style.backgroundColor = "yellow";  // evidenzi in giallo
+      titolo.style.backgroundColor = "yellow";
       card.appendChild(titolo);
       const separatore = document.createElement("hr");
       separatore.style.border = "1px solid black";
@@ -140,11 +148,11 @@ function mostraRiepilogo() {
           btnDel.className = "elimina";
           btnDel.textContent = "Elimina";
           btnDel.onclick = () => {
-          const index = timbrature.indexOf(t);
-          if (index >= 0) {
-            timbrature.splice(index, 1);
-            salvaLocalStorage();
-            mostraRiepilogo();
+            const index = timbrature.indexOf(t);
+            if (index >= 0) {
+              timbrature.splice(index, 1);
+              salvaLocalStorage();
+              mostraRiepilogo();
             }
           };
 
@@ -188,6 +196,7 @@ function modificaTimbratura(t) {
   modificaIndex = timbrature.indexOf(t);
   boxPersonalizza.style.display = "block";
   btnAnnulla.disabled = false;
+  controllaSalvabilita();
 }
 
 filtroData.onchange = mostraRiepilogo;
@@ -202,5 +211,4 @@ if ('serviceWorker' in navigator) {
     .catch(err => console.error('❌ Errore nel Service Worker:', err));
 }
 
-// All'avvio mostra subito il riepilogo
 mostraRiepilogo();
