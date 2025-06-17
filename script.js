@@ -143,9 +143,6 @@ function mostraRiepilogo() {
       separatore.style.border = "1px solid black";
       card.appendChild(separatore);
 
-      let entrataObj = perData[data].find(e => e.tipo === "Entrata");
-      let uscitaObj = perData[data].find(e => e.tipo === "Uscita");
-
       ["Entrata", "Uscita"].forEach(tipo => {
         const t = perData[data].find(e => e.tipo === tipo);
         if (t) {
@@ -180,6 +177,9 @@ function mostraRiepilogo() {
           card.appendChild(p);
         }
       });
+
+      let entrataObj = perData[data].find(e => e.tipo === "Entrata");
+      let uscitaObj = perData[data].find(e => e.tipo === "Uscita");
 
       if (entrataObj && uscitaObj) {
         const inTime = parseDateTime(entrataObj.data, entrataObj.ora);
