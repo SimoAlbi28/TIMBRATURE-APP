@@ -142,3 +142,9 @@ btnResetFiltro.onclick = () => {
   filtroData.value = "";
   mostraRiepilogo();
 };
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./service-worker.js')
+    .then(() => console.log('✅ Service Worker registrato!'))
+    .catch(err => console.error('❌ Errore nel Service Worker:', err));
+}
