@@ -5,6 +5,7 @@ body {
   background-size: cover;
   background-attachment: fixed;
   padding: 20px;
+  filter: brightness(150%);
   text-align: center;
   overflow-x: hidden;
   z-index: 0;
@@ -155,6 +156,10 @@ button {
   font-size: 12px;
   margin-left: 6px;
   padding: 4px 6px;
+}
+
+#filtra {
+  color: rgb(153, 151, 151);
 }
 
 .modifica {
