@@ -1,214 +1,144 @@
-// Variabili globali
 let timbrature = [];
-let modificaIndex = null;
-let filtroData = "";
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Carica dati da localStorage
-  const datiSalvati = localStorage.getItem("timbrature");
-  if (datiSalvati) timbrature = JSON.parse(datiSalvati);
+const btnEntrata = document.getElementById("btnEntrata");
+const btnUscita = document.getElementById("btnUscita");
+const btnPersonalizza = document.getElementById("btnPersonalizza");
+const boxPersonalizza = document.getElementById("boxPersonalizza");
+const formTimbratura = document.getElementById("formTimbratura");
+const btnAnnulla = document.getElementById("btnAnnulla");
+const contaCaratteri = document.getElementById("contaCaratteri");
+const descrizioneInput = document.getElementById("descrizione");
+const filtroData = document.getElementById("filtroData");
+const btnResetFiltro = document.getElementById("btnResetFiltro");
 
-  // Elementi DOM
-  const btnEntrata = document.getElementById("btnEntrata");
-  const btnUscita = document.getElementById("btnUscita");
-  const btnPersonalizza = document.getElementById("btnPersonalizza");
-  const boxPersonalizza = document.getElementById("boxPersonalizza");
-  const formTimbratura = document.getElementById("formTimbratura");
-  const btnSalva = document.getElementById("btnSalva");
-  const btnAnnulla = document.getElementById("btnAnnulla");
+let modificaIndex = -1;
 
-  const filtroInput = document.getElementById("filtroData");
-  const btnResetFiltro = document.getElementById("btnResetFiltro");
+btnEntrata.onclick = () => aggiungiTimbratura(new Date(), "Entrata", "");
+btnUscita.onclick = () => aggiungiTimbratura(new Date(), "Uscita", "");
+btnPersonalizza.onclick = () => {
+  boxPersonalizza.style.display = boxPersonalizza.style.display === "none" ? "block" : "none";
+  formTimbratura.reset();
+  btnAnnulla.disabled = true;
+  modificaIndex = -1;
+  contaCaratteri.innerText = "0/30 caratteri";
+};
 
-  // Funzioni helper
-  function salvaDati() {
-    localStorage.setItem("timbrature", JSON.stringify(timbrature));
+descrizioneInput.addEventListener("input", () => {
+  const len = descrizioneInput.value.length;
+  contaCaratteri.innerText = `${len}/30 caratteri`;
+  btnAnnulla.disabled = len === 0 && modificaIndex === -1;
+});
+
+formTimbratura.onsubmit = (e) => {
+  e.preventDefault();
+  const data = document.getElementById("data").value;
+  const ora = document.getElementById("ora").value;
+  const tipo = document.getElementById("tipo").value;
+  const descrizione = document.getElementById("descrizione").value;
+
+  const dateTime = new Date(`${data}T${ora}`);
+
+  if (modificaIndex >= 0) {
+    timbrature[modificaIndex] = { data: data, ora: ora, tipo, descrizione };
+  } else {
+    timbrature.push({ data: data, ora: ora, tipo, descrizione });
   }
 
-  function resetForm() {
-    formTimbratura.reset();
-    modificaIndex = null;
-    btnAnnulla.disabled = true;
-  }
+  modificaIndex = -1;
+  formTimbratura.reset();
+  contaCaratteri.innerText = "0/30 caratteri";
+  boxPersonalizza.style.display = "none";
+  mostraRiepilogo();
+};
 
-  function mostraRiepilogo() {
-    const container = document.getElementById("riepilogo");
-    container.innerHTML = "";
+btnAnnulla.onclick = () => {
+  formTimbratura.reset();
+  contaCaratteri.innerText = "0/30 caratteri";
+  btnAnnulla.disabled = true;
+  modificaIndex = -1;
+  boxPersonalizza.style.display = "none";
+};
 
-    // Raggruppa timbrature per data
-    const gruppi = {};
-    timbrature.forEach((t, i) => {
-      if (filtroData && t.data !== filtroData) return; // Applica filtro
-      if (!gruppi[t.data]) gruppi[t.data] = [];
-      gruppi[t.data].push({ ...t, index: i });
+function aggiungiTimbratura(date, tipo, descrizione) {
+  const data = date.toISOString().slice(0, 10);
+  const ora = date.toTimeString().slice(0, 5);
+  timbrature.push({ data, ora, tipo, descrizione });
+  mostraRiepilogo();
+  boxPersonalizza.style.display = "none";
+}
+
+function mostraRiepilogo() {
+  const riepilogo = document.getElementById("riepilogo");
+  riepilogo.innerHTML = "";
+
+  const filtrate = filtroData.value ? timbrature.filter(t => t.data === filtroData.value) : timbrature;
+
+  const perData = {};
+  filtrate.forEach(t => {
+    if (!perData[t.data]) perData[t.data] = [];
+    perData[t.data].push(t);
+  });
+
+  Object.keys(perData).sort().forEach(data => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    // cambio qui: formatto la data da 'aaaa-mm-gg' a 'gg/mm/aaaa'
+    const [yyyy, mm, gg] = data.split("-");
+    const dataFormattata = `${gg}/${mm}/${yyyy}`;
+
+    const titolo = document.createElement("h3");
+    titolo.textContent = dataFormattata;  // uso la data formattata
+    card.appendChild(titolo);
+
+    ["Entrata", "Uscita"].forEach(tipo => {
+      const t = perData[data].find(e => e.tipo === tipo);
+      if (t) {
+        const p = document.createElement("p");
+        const span = document.createElement("span");
+        span.innerHTML = `<strong style="color:${tipo === "Entrata" ? "green" : "red"}">${tipo.toUpperCase()}</strong> ${t.ora} ${t.descrizione ? `(${t.descrizione})` : ""}`;
+
+        const azioni = document.createElement("span");
+        azioni.className = "azioni";
+
+        const btnMod = document.createElement("button");
+        btnMod.className = "modifica";
+        btnMod.textContent = "Modifica";
+        btnMod.onclick = () => modificaTimbratura(t);
+
+        const btnDel = document.createElement("button");
+        btnDel.className = "elimina";
+        btnDel.textContent = "Elimina";
+        btnDel.onclick = () => {
+          timbrature = timbrature.filter(tt => tt !== t);
+          mostraRiepilogo();
+        };
+
+        azioni.appendChild(btnMod);
+        azioni.appendChild(btnDel);
+        p.appendChild(span);
+        p.appendChild(azioni);
+        card.appendChild(p);
+      }
     });
 
-    if (Object.keys(gruppi).length === 0) {
-      container.innerHTML =
-        "<p style='text-align:center; color:red; display:flex; justify-content:center; align-items:center; height:100px; margin:0;'>Nessun risultato trovato.</p>";
-      return;
-    }
-    
-    // Ordina date discendente e mostra
-    Object.keys(gruppi)
-      .sort((a, b) => new Date(b) - new Date(a))
-      .forEach((data) => {
-        const card = document.createElement("div");
-        card.className = "card";
-
-        const [yyyy, mm, dd] = data.split("-");
-        const titolo = document.createElement("h3");
-        titolo.textContent = `${dd}/${mm}/${yyyy}`;
-        card.appendChild(titolo);
-
-        const entrata = gruppi[data].find((t) => t.tipo === "Entrata");
-        const uscita = gruppi[data].find((t) => t.tipo === "Uscita");
-
-        [entrata, uscita].forEach((item) => {
-          if (!item) return;
-          const p = document.createElement("p");
-          p.innerHTML = `<strong style="color:${
-            item.tipo === "Entrata" ? "green" : "red"
-          }">${item.tipo.toUpperCase()}</strong> — ${item.ora} ${
-            item.descrizione || ""
-          }`;
-
-          const btnMod = document.createElement("button");
-          btnMod.textContent = "✏️";
-          btnMod.className = "modifica";
-          btnMod.addEventListener("click", () => caricaPerModifica(item.index));
-
-          const btnDel = document.createElement("button");
-          btnDel.textContent = "🗑️";
-          btnDel.className = "elimina";
-          btnDel.addEventListener("click", () => {
-            timbrature.splice(item.index, 1);
-            salvaDati();
-            mostraRiepilogo();
-          });
-
-          const spanBtns = document.createElement("span");
-          spanBtns.className = "azioni";
-          spanBtns.appendChild(btnMod);
-          spanBtns.appendChild(btnDel);
-          p.appendChild(spanBtns);
-
-          card.appendChild(p);
-        });
-
-        // Calcola ore lavorate se entrata e uscita presenti
-        const totOre = document.createElement("p");
-        if (entrata && uscita) {
-          const [h1, m1] = entrata.ora.split(":").map(Number);
-          const [h2, m2] = uscita.ora.split(":").map(Number);
-          let diff = h2 * 60 + m2 - (h1 * 60 + m1);
-          if (diff < 0) diff += 1440;
-          totOre.textContent = `Totale ore lavorate: ${Math.floor(diff / 60)}h ${
-            diff % 60
-          }m`;
-        } else {
-          totOre.textContent = "Totale ore lavorate: …";
-        }
-        totOre.style.fontWeight = "bold";
-        card.appendChild(totOre);
-
-        container.appendChild(card);
-      });
-  }
-
-  function caricaPerModifica(index) {
-    modificaIndex = index;
-    const t = timbrature[index];
-    document.getElementById("data").value = t.data;
-    document.getElementById("ora").value = t.ora;
-    document.getElementById("descrizione").value = t.descrizione || "";
-    document.getElementById("tipo").value = t.tipo;
-
-    boxPersonalizza.style.display = "block";
-    btnAnnulla.disabled = false;
-  }
-
-  // Event listeners
-
-  btnEntrata.addEventListener("click", () => {
-    const now = new Date();
-    const data = now.toISOString().slice(0, 10);
-    const ora = now.toTimeString().slice(0, 5);
-    timbrature.push({ data, ora, tipo: "Entrata", descrizione: "" });
-    salvaDati();
-    mostraRiepilogo();
-    if (boxPersonalizza.style.display === "block") boxPersonalizza.style.display = "none";
+    riepilogo.appendChild(card);
   });
+}
 
-  btnUscita.addEventListener("click", () => {
-    const now = new Date();
-    const data = now.toISOString().slice(0, 10);
-    const ora = now.toTimeString().slice(0, 5);
-    timbrature.push({ data, ora, tipo: "Uscita", descrizione: "" });
-    salvaDati();
-    mostraRiepilogo();
-    if (boxPersonalizza.style.display === "block") boxPersonalizza.style.display = "none";
-  });
+function modificaTimbratura(t) {
+  document.getElementById("data").value = t.data;
+  document.getElementById("ora").value = t.ora;
+  document.getElementById("tipo").value = t.tipo;
+  document.getElementById("descrizione").value = t.descrizione;
+  contaCaratteri.innerText = `${t.descrizione.length}/30 caratteri`;
+  modificaIndex = timbrature.indexOf(t);
+  boxPersonalizza.style.display = "block";
+  btnAnnulla.disabled = false;
+}
 
-  btnPersonalizza.addEventListener("click", () => {
-    if (boxPersonalizza.style.display === "block") {
-      boxPersonalizza.style.display = "none";
-    } else {
-      boxPersonalizza.style.display = "block";
-    }
-  });
-
-  formTimbratura.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const data = document.getElementById("data").value;
-    const ora = document.getElementById("ora").value;
-    const descrizione = document.getElementById("descrizione").value.trim();
-    const tipo = document.getElementById("tipo").value;
-
-    if (!data || !ora || !tipo) {
-      alert("Compila tutti i campi obbligatori.");
-      return;
-    }
-
-    if (modificaIndex !== null) {
-      timbrature[modificaIndex] = { data, ora, tipo, descrizione };
-    } else {
-      timbrature.push({ data, ora, tipo, descrizione });
-    }
-
-    salvaDati();
-    mostraRiepilogo();
-    resetForm();
-    boxPersonalizza.style.display = "none";
-  });
-
-  btnAnnulla.addEventListener("click", () => {
-    resetForm();
-    boxPersonalizza.style.display = "none";
-  });
-
-  // Abilita/disabilita bottone Annulla nel form personalizzato
-  formTimbratura.addEventListener("input", () => {
-    const dataVal = document.getElementById("data").value;
-    const oraVal = document.getElementById("ora").value;
-    const tipoVal = document.getElementById("tipo").value;
-    btnAnnulla.disabled = !(dataVal || oraVal || tipoVal);
-  });
-
-  // Filtra in tempo reale per data
-  filtroInput.addEventListener("input", () => {
-    filtroData = filtroInput.value;
-    mostraRiepilogo();
-  });
-
-  // Reset filtro data
-  btnResetFiltro.addEventListener("click", () => {
-    filtroData = "";
-    filtroInput.value = "";
-    mostraRiepilogo();
-  });
-
-  // Primo caricamento
+filtroData.onchange = mostraRiepilogo;
+btnResetFiltro.onclick = () => {
+  filtroData.value = "";
   mostraRiepilogo();
-  resetForm();
-});
+};
