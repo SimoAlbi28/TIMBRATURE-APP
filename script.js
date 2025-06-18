@@ -11,6 +11,7 @@ function getDataGGMMYYYY(date) {
   return `${dd}/${mm}/${yyyy}`;
 }
 
+// DOM Elements
 const btnEntrata = document.getElementById("btnEntrata");
 const btnUscita = document.getElementById("btnUscita");
 const btnPersonalizza = document.getElementById("btnPersonalizza");
@@ -30,27 +31,33 @@ function controllaSalvabilita() {
   const oraVal = document.getElementById("ora").value;
   btnSalva.disabled = !(dataVal && oraVal);
 }
+
 document.getElementById("data").addEventListener("input", controllaSalvabilita);
 document.getElementById("ora").addEventListener("input", controllaSalvabilita);
 controllaSalvabilita();
 
+// Pulsanti principali
 btnEntrata.onclick = () => aggiungiTimbratura(new Date(), "Entrata", "");
 btnUscita.onclick = () => aggiungiTimbratura(new Date(), "Uscita", "");
+
 btnPersonalizza.onclick = () => {
   boxPersonalizza.style.display = boxPersonalizza.style.display === "none" ? "block" : "none";
   formTimbratura.reset();
   modificaIndex = -1;
-  contaCaratteri.innerText = "0/30 caratteri";
+  contaCaratteri.innerText = "0/25 caratteri";
   controllaSalvabilita();
 };
 
+// Conta caratteri
 descrizioneInput.addEventListener("input", () => {
   const len = descrizioneInput.value.length;
-  contaCaratteri.innerText = `${len}/30 caratteri`;
+  contaCaratteri.innerText = `${len}/25 caratteri`;
 });
 
+// Salvataggio form
 formTimbratura.onsubmit = (e) => {
   e.preventDefault();
+
   const dataInput = document.getElementById("data").value;
   const ora = document.getElementById("ora").value;
   const tipo = document.getElementById("tipo").value;
@@ -66,10 +73,9 @@ formTimbratura.onsubmit = (e) => {
   }
 
   salvaLocalStorage();
-
   modificaIndex = -1;
   formTimbratura.reset();
-  contaCaratteri.innerText = "0/30 caratteri";
+  contaCaratteri.innerText = "0/25 caratteri";
   boxPersonalizza.style.display = "none";
   mostraRiepilogo();
   controllaSalvabilita();
@@ -77,7 +83,7 @@ formTimbratura.onsubmit = (e) => {
 
 btnAnnulla.onclick = () => {
   formTimbratura.reset();
-  contaCaratteri.innerText = "0/30 caratteri";
+  contaCaratteri.innerText = "0/25 caratteri";
   modificaIndex = -1;
   boxPersonalizza.style.display = "none";
   controllaSalvabilita();
@@ -139,6 +145,7 @@ function mostraRiepilogo() {
       titolo.textContent = data;
       titolo.style.backgroundColor = "yellow";
       card.appendChild(titolo);
+
       const separatore = document.createElement("hr");
       separatore.style.border = "1px solid black";
       card.appendChild(separatore);
@@ -148,7 +155,7 @@ function mostraRiepilogo() {
         if (t) {
           const p = document.createElement("p");
           const span = document.createElement("span");
-          span.innerHTML = `<strong style="color:${tipo === "Entrata" ? "rgb(21, 247, 0)" : "rgb(255, 35, 35)"}">${tipo.toUpperCase()}</strong> ${t.ora} ${t.descrizione ? `(${t.descrizione})` : ""}`;
+          span.innerHTML = `<strong style="color:${tipo === "Entrata" ? "rgb(14, 167, 0)" : "rgb(255, 35, 35)"}">${tipo.toUpperCase()}</strong> ${t.ora} ${t.descrizione ? `(${t.descrizione})` : ""}`;
 
           const azioni = document.createElement("span");
           azioni.className = "azioni";
@@ -190,13 +197,20 @@ function mostraRiepilogo() {
         const diffH = Math.floor(diffMs / (1000 * 60 * 60));
         const diffM = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
 
-        const totOre = document.createElement("p");
-        totOre.style.fontWeight = "bold";
-        totOre.style.marginTop = "10px";
         const separatore = document.createElement("hr");
         separatore.style.border = "1px solid black";
         card.appendChild(separatore);
-        totOre.textContent = `⏳ Totale ore - min di lavoro: ${diffH}h ${diffM}m`;
+
+        const totOre = document.createElement("p");
+        totOre.textContent = `⏳ Totale ore - min di lavoro: ${diffH}h ${diffM}m ⏳`;
+        totOre.style.cssText = `
+          font-weight: bold;
+          margin-top: 10px;
+          text-align: center;
+          width: 100%;
+          display: block;
+          font-size: 1.1rem;
+        `;
         card.appendChild(totOre);
       }
 
@@ -210,7 +224,7 @@ function modificaTimbratura(t) {
   document.getElementById("ora").value = t.ora;
   document.getElementById("tipo").value = t.tipo;
   document.getElementById("descrizione").value = t.descrizione;
-  contaCaratteri.innerText = `${t.descrizione.length}/30 caratteri`;
+  contaCaratteri.innerText = `${t.descrizione.length}/25 caratteri`;
   modificaIndex = timbrature.indexOf(t);
   boxPersonalizza.style.display = "block";
   btnAnnulla.disabled = false;
@@ -218,11 +232,13 @@ function modificaTimbratura(t) {
 }
 
 filtroData.onchange = mostraRiepilogo;
+
 btnResetFiltro.onclick = () => {
   filtroData.value = "";
   mostraRiepilogo();
 };
 
+// Service Worker
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./service-worker.js')
     .then(() => console.log('✅ Service Worker registrato!'))
