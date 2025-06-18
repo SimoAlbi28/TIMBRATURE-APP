@@ -142,16 +142,12 @@ function mostraRiepilogo() {
       card.className = "card";
 
       const titoloWrapper = document.createElement("div");
-      titoloWrapper.style.textAlign = "center"; // 👈 forza il centramento
+      titoloWrapper.style.textAlign = "center";
 
       const titolo = document.createElement("h3");
       titolo.textContent = data;
-      titolo.className = "titolo-giorno";
-
       titoloWrapper.appendChild(titolo);
       card.appendChild(titoloWrapper);
-
-
 
       const separatore = document.createElement("hr");
       separatore.style.border = "1px solid black";
@@ -161,8 +157,10 @@ function mostraRiepilogo() {
         const t = perData[data].find(e => e.tipo === tipo);
         if (t) {
           const p = document.createElement("p");
+
+          // testo colore Entrata verde, Uscita rosso
           const span = document.createElement("span");
-          span.innerHTML = `<strong style="color:${tipo === "Entrata" ? "rgb(14, 167, 0)" : "rgb(255, 35, 35)"} ">${tipo.toUpperCase()}</strong> ${t.ora} ${t.descrizione ? `(${t.descrizione})` : ""}`;
+          span.innerHTML = `<strong style="color:${tipo === "Entrata" ? "rgb(14, 167, 0)" : "rgb(255, 35, 35)"}">${tipo.toUpperCase()}</strong> ${t.ora} ${t.descrizione ? `(${t.descrizione})` : ""}`;
 
           const azioni = document.createElement("span");
           azioni.className = "azioni";
@@ -192,30 +190,32 @@ function mostraRiepilogo() {
         }
       });
 
-      let entrataObj = perData[data].find(e => e.tipo === "Entrata");
-      let uscitaObj = perData[data].find(e => e.tipo === "Uscita");
+      const entrataObj = perData[data].find(e => e.tipo === "Entrata");
+      const uscitaObj = perData[data].find(e => e.tipo === "Uscita");
 
       if (entrataObj && uscitaObj) {
         const inTime = parseDateTime(entrataObj.data, entrataObj.ora);
         const outTime = parseDateTime(uscitaObj.data, uscitaObj.ora);
-        let diffMs = outTime - inTime;
-        if (diffMs < 0) diffMs = 0;
+
+        // Calcola correttamente anche se invertiti
+        let start = inTime < outTime ? inTime : outTime;
+        let end = inTime < outTime ? outTime : inTime;
+        let diffMs = end - start;
 
         const diffH = Math.floor(diffMs / (1000 * 60 * 60));
         const diffM = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
 
-        const separatore = document.createElement("hr");
-        separatore.style.border = "1px solid black";
-        card.appendChild(separatore);
+        const separatore2 = document.createElement("hr");
+        separatore2.style.border = "1px solid black";
+        card.appendChild(separatore2);
 
         const totOre = document.createElement("p");
-        totOre.textContent = `⏳ Tot ore-min Lavoro: ${diffH}h - ${diffM}m ⏳`;
+        totOre.textContent = `⏳ Totale ore-minuti di lavoro: ${diffH}h ${diffM}m ⏳`;
         totOre.style.cssText = `
           font-weight: bold;
           margin-top: 10px;
           text-align: center;
           width: 100%;
-          display: block;
           font-size: 1.1rem;
         `;
         card.appendChild(totOre);
@@ -233,10 +233,16 @@ function modificaTimbratura(t) {
   document.getElementById("descrizione").value = t.descrizione;
   contaCaratteri.innerText = `${t.descrizione.length}/25 caratteri`;
   modificaIndex = timbrature.indexOf(t);
+  
+  // Mostra il form personalizzato
   boxPersonalizza.style.display = "block";
   btnAnnulla.disabled = false;
   controllaSalvabilita();
+
+  // Scrolla il form in vista
+  boxPersonalizza.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
 
 filtroData.onchange = mostraRiepilogo;
 
