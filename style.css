@@ -27,6 +27,15 @@ body::before {
   z-index: -1;
 }
 
+#riepilogo strong {
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+
 .box-form label {
   font-size: 18px;
   font-weight: bold;
@@ -136,8 +145,8 @@ button {
 }
 
 #riepilogo .card {
-  background-color: #ebe4e488;
-  border: 5px solid #ffffff;
+  background-color: #ffab74;
+  border: 4px solid #ffffff;
   padding: 10px;
   margin: 15px auto;
   width: 95%;
@@ -198,7 +207,7 @@ button {
   padding: 5px;
   font-size: 16px;
   border-radius: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid #000000;
 }
 
 #btnResetFiltro {
@@ -222,4 +231,40 @@ button {
   margin-top: -10px;
   margin-bottom: 10px;
   text-align: center;
+}
+
+.filtro-container {
+  background-color: #99fffa;
+  border: 4px solid #ffffff;
+  padding: 15px;
+  border-radius: 10px;
+  margin: 20px auto;
+  max-width: 400px;
+  text-align: center;
+}
+
+.filtro-container h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+.filtro-riga {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.filtro-riga input[type="date"] {
+  padding: 6px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.filtro-riga button {
+  padding: 6px 12px;
+  font-size: 16px;
+  border-radius: 5px;
 }
