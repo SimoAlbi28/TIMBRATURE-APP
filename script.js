@@ -141,10 +141,17 @@ function mostraRiepilogo() {
       const card = document.createElement("div");
       card.className = "card";
 
+      const titoloWrapper = document.createElement("div");
+      titoloWrapper.style.textAlign = "center"; // 👈 forza il centramento
+
       const titolo = document.createElement("h3");
       titolo.textContent = data;
-      titolo.style.backgroundColor = "yellow";
-      card.appendChild(titolo);
+      titolo.className = "titolo-giorno";
+
+      titoloWrapper.appendChild(titolo);
+      card.appendChild(titoloWrapper);
+
+
 
       const separatore = document.createElement("hr");
       separatore.style.border = "1px solid black";
@@ -202,7 +209,7 @@ function mostraRiepilogo() {
         card.appendChild(separatore);
 
         const totOre = document.createElement("p");
-        totOre.textContent = `⏳ Totale ore - min di lavoro: ${diffH}h ${diffM}m ⏳`;
+        totOre.textContent = `⏳ Tot ore-min Lavoro: ${diffH}h - ${diffM}m ⏳`;
         totOre.style.cssText = `
           font-weight: bold;
           margin-top: 10px;

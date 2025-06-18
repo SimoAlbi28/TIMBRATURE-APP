@@ -61,6 +61,35 @@ h1 {
   margin-bottom: 20px;
 }
 
+h2 {
+  display: inline-block;        /* 👈 fa adattare la larghezza al contenuto */
+  background-color: #000;
+  color: #fff;
+  border-radius: 1px;
+  padding: 10px 20px;
+  font-size: 2rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  margin: 0 auto 20px auto;
+}
+
+.titolo-giorno {
+  background-color: yellow;
+  color: black;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: 1.2rem;
+  display: inline-block;
+  font-weight: bold;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.riepilogo-titolo {
+  text-align: center;           /* 👈 centra il blocco */
+}
+
+
 .riepilogo-titolo {
   text-align: center;
   font-size: 24px;
@@ -198,6 +227,11 @@ button {
   background-color: red;
 }
 
+#filtraTit {
+  background-color: white;
+  border-radius: 6px;
+}
+
 #filtroDataContainer label {
   font-weight: bold;
   font-size: 18px;
@@ -209,6 +243,8 @@ button {
   border-radius: 5px;
   border: 1px solid #000000;
 }
+
+
 
 #btnResetFiltro {
   background-color: #b60903;
@@ -267,4 +303,10 @@ button {
   padding: 6px 12px;
   font-size: 16px;
   border-radius: 5px;
+}
+
+#riepTit {
+  
+  background-color: black;
+  border-radius: 6px;
 }
