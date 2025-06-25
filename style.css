@@ -439,3 +439,11 @@ button {
 .card hr {
   margin: 10px 0;
 }
+
+.azioni button {
+  white-space: nowrap;   /* testo su una riga sola */
+  font-size: 12px;       /* già piccolo, puoi ridurre ancora se serve */
+  padding: 4px 6px;      /* poco padding per far entrare */
+  min-width: 60px;       /* larghezza minima, cambia se serve */
+  box-sizing: border-box;
+}
