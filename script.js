@@ -44,14 +44,14 @@ btnPersonalizza.onclick = () => {
   boxPersonalizza.style.display = boxPersonalizza.style.display === "none" ? "block" : "none";
   formTimbratura.reset();
   modificaIndex = -1;
-  contaCaratteri.innerText = "0/25 caratteri";
+  contaCaratteri.innerText = "0/50 caratteri";
   controllaSalvabilita();
 };
 
 // Conta caratteri
 descrizioneInput.addEventListener("input", () => {
   const len = descrizioneInput.value.length;
-  contaCaratteri.innerText = `${len}/25 caratteri`;
+  contaCaratteri.innerText = `${len}/50 caratteri`;
 });
 
 // Salvataggio form
@@ -75,7 +75,7 @@ formTimbratura.onsubmit = (e) => {
   salvaLocalStorage();
   modificaIndex = -1;
   formTimbratura.reset();
-  contaCaratteri.innerText = "0/25 caratteri";
+  contaCaratteri.innerText = "0/50 caratteri";
   boxPersonalizza.style.display = "none";
   mostraRiepilogo();
   controllaSalvabilita();
@@ -83,7 +83,7 @@ formTimbratura.onsubmit = (e) => {
 
 btnAnnulla.onclick = () => {
   formTimbratura.reset();
-  contaCaratteri.innerText = "0/25 caratteri";
+  contaCaratteri.innerText = "0/50 caratteri";
   modificaIndex = -1;
   boxPersonalizza.style.display = "none";
   controllaSalvabilita();
@@ -151,56 +151,87 @@ function mostraRiepilogo() {
 
       const separatore = document.createElement("hr");
       separatore.style.border = "1px solid black";
+      separatore.style.margin = "10px 0";
       card.appendChild(separatore);
 
-      ["Entrata", "Uscita"].forEach(tipo => {
-        const t = perData[data].find(e => e.tipo === tipo);
-        if (t) {
-          const p = document.createElement("p");
+      const wrapper = document.createElement("div");
+      wrapper.className = "card-entry-exit";
 
-          // testo colore Entrata verde, Uscita rosso
-          const span = document.createElement("span");
-          span.innerHTML = `<strong style="color:${tipo === "Entrata" ? "rgb(14, 167, 0)" : "rgb(255, 35, 35)"}">${tipo.toUpperCase()}</strong> ${t.ora} ${t.descrizione ? `(${t.descrizione})` : ""}`;
+      const createBox = (tipoObj, tipo) => {
+        const box = document.createElement("div");
+        box.className = "entry-exit-box";
+        box.classList.add(tipo.toLowerCase()); // "entrata" o "uscita"
 
-          const azioni = document.createElement("span");
-          azioni.className = "azioni";
+        // Titolo tipo (centrato, colore + contorno nero)
+        const tipoTitolo = document.createElement("div");
+        tipoTitolo.textContent = tipo.toUpperCase();
 
-          const btnMod = document.createElement("button");
-          btnMod.className = "modifica";
-          btnMod.textContent = "Modifica";
-          btnMod.onclick = () => modificaTimbratura(t);
+        // Ora (centrata, nero)
+        const oraDiv = document.createElement("div");
+        oraDiv.textContent = tipoObj.ora;
+        oraDiv.className = "ora";
 
-          const btnDel = document.createElement("button");
-          btnDel.className = "elimina";
-          btnDel.textContent = "Elimina";
-          btnDel.onclick = () => {
-            const index = timbrature.indexOf(t);
-            if (index >= 0) {
-              timbrature.splice(index, 1);
-              salvaLocalStorage();
-              mostraRiepilogo();
-            }
-          };
-
-          azioni.appendChild(btnMod);
-          azioni.appendChild(btnDel);
-          p.appendChild(span);
-          p.appendChild(azioni);
-          card.appendChild(p);
+        // Descrizione solo se presente, tra parentesi
+        const descDiv = document.createElement("div");
+        if (tipoObj.descrizione && tipoObj.descrizione.trim().length > 0) {
+          descDiv.textContent = `(${tipoObj.descrizione.trim()})`;
+        } else {
+          descDiv.textContent = "";
         }
-      });
+        descDiv.className = "descrizione";
 
+        // Bottoni più piccoli, affiancati e centrati
+        const azioni = document.createElement("div");
+        azioni.className = "azioni";
+
+        const btnMod = document.createElement("button");
+        btnMod.className = "modifica";
+        btnMod.textContent = "Modifica";
+        btnMod.onclick = () => modificaTimbratura(tipoObj);
+
+        const btnDel = document.createElement("button");
+        btnDel.className = "elimina";
+        btnDel.textContent = "Elimina";
+        btnDel.onclick = () => {
+          const index = timbrature.indexOf(tipoObj);
+          if (index >= 0) {
+            timbrature.splice(index, 1);
+            salvaLocalStorage();
+            mostraRiepilogo();
+          }
+        };
+
+        azioni.appendChild(btnMod);
+        azioni.appendChild(btnDel);
+
+        // Ordine nel box
+        box.appendChild(tipoTitolo);
+        box.appendChild(oraDiv);
+        box.appendChild(descDiv);
+        box.appendChild(azioni);
+
+        return box;
+      };
+
+      // Ordina per far sempre vedere prima Entrata, poi Uscita (se ci sono)
       const entrataObj = perData[data].find(e => e.tipo === "Entrata");
       const uscitaObj = perData[data].find(e => e.tipo === "Uscita");
+
+      if (entrataObj) wrapper.appendChild(createBox(entrataObj, "Entrata"));
+      if (uscitaObj) wrapper.appendChild(createBox(uscitaObj, "Uscita"));
+
+      card.appendChild(wrapper);
 
       if (entrataObj && uscitaObj) {
         const inTime = parseDateTime(entrataObj.data, entrataObj.ora);
         const outTime = parseDateTime(uscitaObj.data, uscitaObj.ora);
 
-        // Calcola correttamente anche se invertiti
-        let start = inTime < outTime ? inTime : outTime;
-        let end = inTime < outTime ? outTime : inTime;
-        let diffMs = end - start;
+        let diffMs;
+        if (outTime >= inTime) {
+          diffMs = outTime - inTime;
+        } else {
+          diffMs = (outTime.getTime() + 24 * 60 * 60 * 1000) - inTime.getTime();
+        }
 
         const diffH = Math.floor(diffMs / (1000 * 60 * 60));
         const diffM = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
@@ -231,9 +262,9 @@ function modificaTimbratura(t) {
   document.getElementById("ora").value = t.ora;
   document.getElementById("tipo").value = t.tipo;
   document.getElementById("descrizione").value = t.descrizione;
-  contaCaratteri.innerText = `${t.descrizione.length}/25 caratteri`;
+  contaCaratteri.innerText = `${t.descrizione.length}/50 caratteri`;
   modificaIndex = timbrature.indexOf(t);
-  
+
   // Mostra il form personalizzato
   boxPersonalizza.style.display = "block";
   btnAnnulla.disabled = false;
@@ -242,7 +273,6 @@ function modificaTimbratura(t) {
   // Scrolla il form in vista
   boxPersonalizza.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-
 
 filtroData.onchange = mostraRiepilogo;
 
