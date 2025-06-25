@@ -64,7 +64,7 @@ formTimbratura.onsubmit = (e) => {
   const descrizione = document.getElementById("descrizione").value;
 
   const [yyyy, mm, dd] = dataInput.split("-");
-  const data = `${dd}/${mm}/${yyyy}`;
+  const data = `${dd} / ${mm} / ${yyyy}`;
 
   if (modificaIndex >= 0) {
     timbrature[modificaIndex] = { data, ora, tipo, descrizione };
@@ -120,7 +120,7 @@ function mostraRiepilogo() {
   const filtrate = filtroData.value
     ? timbrature.filter(t => {
         const [yyyy, mm, dd] = filtroData.value.split("-");
-        const dataFiltro = `${dd}/${mm}/${yyyy}`;
+        const dataFiltro = `${dd} / ${mm} / ${yyyy}`;
         return t.data === dataFiltro;
       })
     : timbrature;
@@ -133,8 +133,8 @@ function mostraRiepilogo() {
 
   Object.keys(perData)
     .sort((a, b) => {
-      const [ggA, mmA, yyyyA] = a.split("/");
-      const [ggB, mmB, yyyyB] = b.split("/");
+      const [ggA, mmA, yyyyA] = a.split(" / ");
+      const [ggB, mmB, yyyyB] = b.split(" / ");
       return new Date(`${yyyyB}-${mmB}-${ggB}`) - new Date(`${yyyyA}-${mmA}-${ggA}`);
     })
     .forEach(data => {
@@ -257,7 +257,7 @@ function mostraRiepilogo() {
 }
 
 function modificaTimbratura(t) {
-  const [gg, mm, yyyy] = t.data.split("/");
+  const [gg, mm, yyyy] = t.data.split(" / ");
   document.getElementById("data").value = `${yyyy}-${mm}-${gg}`;
   document.getElementById("ora").value = t.ora;
   document.getElementById("tipo").value = t.tipo;
