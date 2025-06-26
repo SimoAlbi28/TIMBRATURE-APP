@@ -29,8 +29,15 @@ let modificaIndex = -1;
 function controllaSalvabilita() {
   const dataVal = document.getElementById("data").value;
   const oraVal = document.getElementById("ora").value;
-  btnSalva.disabled = !(dataVal && oraVal);
+
+  if (modificaIndex >= 0 || (dataVal && oraVal)) {
+    btnSalva.disabled = false;
+  } else {
+    btnSalva.disabled = true;
+  }
 }
+
+
 
 document.getElementById("data").addEventListener("input", controllaSalvabilita);
 document.getElementById("ora").addEventListener("input", controllaSalvabilita);
@@ -64,12 +71,32 @@ formTimbratura.onsubmit = (e) => {
   const descrizione = document.getElementById("descrizione").value;
 
   const [yyyy, mm, dd] = dataInput.split("-");
-  const data = `${dd} / ${mm} / ${yyyy}`;
+  const data = `${dd}/${mm}/${yyyy}`.trim();
+
+  const newEntry = {
+    data,
+    ora: ora.trim(),
+    tipo: tipo.trim(),
+    descrizione: descrizione.trim()
+  };
 
   if (modificaIndex >= 0) {
-    timbrature[modificaIndex] = { data, ora, tipo, descrizione };
+    // Se sto modificando, sovrascrivo la timbratura esistente
+    timbrature[modificaIndex] = newEntry;
   } else {
-    timbrature.push({ data, ora, tipo, descrizione });
+    // Se non sto modificando, cerco se esiste una timbratura con stessa data e tipo
+    const index = timbrature.findIndex(t =>
+      t.data.trim() === data &&
+      t.tipo.trim().toLowerCase() === tipo.trim().toLowerCase()
+    );
+
+    if (index >= 0) {
+      // Sovrascrivo quella esistente (sostituzione)
+      timbrature[index] = newEntry;
+    } else {
+      // Altrimenti aggiungo la nuova timbratura
+      timbrature.push(newEntry);
+    }
   }
 
   salvaLocalStorage();
@@ -80,6 +107,7 @@ formTimbratura.onsubmit = (e) => {
   mostraRiepilogo();
   controllaSalvabilita();
 };
+
 
 btnAnnulla.onclick = () => {
   formTimbratura.reset();
@@ -108,10 +136,11 @@ function aggiungiTimbratura(date, tipo, descrizione) {
 }
 
 function parseDateTime(data, ora) {
-  const [gg, mm, yyyy] = data.split("/");
+  const [gg, mm, yyyy] = data.split("/").map(p => p.trim());
   const isoDate = `${yyyy}-${mm}-${gg}T${ora || "00:00"}:00`;
   return new Date(isoDate);
 }
+
 
 function mostraRiepilogo() {
   const riepilogo = document.getElementById("riepilogo");
@@ -120,7 +149,7 @@ function mostraRiepilogo() {
   const filtrate = filtroData.value
     ? timbrature.filter(t => {
         const [yyyy, mm, dd] = filtroData.value.split("-");
-        const dataFiltro = `${dd} / ${mm} / ${yyyy}`;
+        const dataFiltro = `${dd}/${mm}/${yyyy}`;
         return t.data === dataFiltro;
       })
     : timbrature;
@@ -257,7 +286,8 @@ function mostraRiepilogo() {
 }
 
 function modificaTimbratura(t) {
-  const [gg, mm, yyyy] = t.data.split(" / ");
+  const parts = t.data.split("/").map(p => p.trim());
+  const [gg, mm, yyyy] = parts;
   document.getElementById("data").value = `${yyyy}-${mm}-${gg}`;
   document.getElementById("ora").value = t.ora;
   document.getElementById("tipo").value = t.tipo;
