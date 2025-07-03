@@ -162,8 +162,8 @@ function mostraRiepilogo() {
 
   Object.keys(perData)
     .sort((a, b) => {
-      const [ggA, mmA, yyyyA] = a.split(" / ");
-      const [ggB, mmB, yyyyB] = b.split(" / ");
+      const [ggA, mmA, yyyyA] = a.split("/");
+      const [ggB, mmB, yyyyB] = b.split("/");
       return new Date(`${yyyyB}-${mmB}-${ggB}`) - new Date(`${yyyyA}-${mmA}-${ggA}`);
     })
     .forEach(data => {
