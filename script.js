@@ -162,10 +162,13 @@ function mostraRiepilogo() {
 
   Object.keys(perData)
     .sort((a, b) => {
-      const [ggA, mmA, yyyyA] = a.split("/");
-      const [ggB, mmB, yyyyB] = b.split("/");
-      return new Date(`${yyyyB}-${mmB}-${ggB}`) - new Date(`${yyyyA}-${mmA}-${ggA}`);
-    })
+  const [ggA, mmA, yyyyA] = a.split("/");
+  const [ggB, mmB, yyyyB] = b.split("/");
+  const dataA = new Date(parseInt(yyyyA), parseInt(mmA) - 1, parseInt(ggA));
+  const dataB = new Date(parseInt(yyyyB), parseInt(mmB) - 1, parseInt(ggB));
+  return dataB - dataA;
+})
+
     .forEach(data => {
       const card = document.createElement("div");
       card.className = "card";
