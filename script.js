@@ -37,8 +37,6 @@ function controllaSalvabilita() {
   }
 }
 
-
-
 document.getElementById("data").addEventListener("input", controllaSalvabilita);
 document.getElementById("ora").addEventListener("input", controllaSalvabilita);
 controllaSalvabilita();
@@ -53,6 +51,13 @@ btnPersonalizza.onclick = () => {
   modificaIndex = -1;
   contaCaratteri.innerText = "0/50 caratteri";
   controllaSalvabilita();
+
+  // Centra tutto tranne descrizione
+  const inputs = boxPersonalizza.querySelectorAll("input, select");
+  inputs.forEach(inp => {
+    if(inp.id !== "descrizione") inp.style.textAlign = "center";
+    else inp.style.textAlign = "left";
+  });
 };
 
 // Conta caratteri
@@ -81,20 +86,16 @@ formTimbratura.onsubmit = (e) => {
   };
 
   if (modificaIndex >= 0) {
-    // Se sto modificando, sovrascrivo la timbratura esistente
     timbrature[modificaIndex] = newEntry;
   } else {
-    // Se non sto modificando, cerco se esiste una timbratura con stessa data e tipo
     const index = timbrature.findIndex(t =>
       t.data.trim() === data &&
       t.tipo.trim().toLowerCase() === tipo.trim().toLowerCase()
     );
 
     if (index >= 0) {
-      // Sovrascrivo quella esistente (sostituzione)
       timbrature[index] = newEntry;
     } else {
-      // Altrimenti aggiungo la nuova timbratura
       timbrature.push(newEntry);
     }
   }
@@ -107,7 +108,6 @@ formTimbratura.onsubmit = (e) => {
   mostraRiepilogo();
   controllaSalvabilita();
 };
-
 
 btnAnnulla.onclick = () => {
   formTimbratura.reset();
@@ -141,7 +141,6 @@ function parseDateTime(data, ora) {
   return new Date(isoDate);
 }
 
-
 function mostraRiepilogo() {
   const riepilogo = document.getElementById("riepilogo");
   riepilogo.innerHTML = "";
@@ -162,13 +161,12 @@ function mostraRiepilogo() {
 
   Object.keys(perData)
     .sort((a, b) => {
-  const [ggA, mmA, yyyyA] = a.split("/");
-  const [ggB, mmB, yyyyB] = b.split("/");
-  const dataA = new Date(parseInt(yyyyA), parseInt(mmA) - 1, parseInt(ggA));
-  const dataB = new Date(parseInt(yyyyB), parseInt(mmB) - 1, parseInt(ggB));
-  return dataB - dataA;
-})
-
+      const [ggA, mmA, yyyyA] = a.split("/");
+      const [ggB, mmB, yyyyB] = b.split("/");
+      const dataA = new Date(parseInt(yyyyA), parseInt(mmA) - 1, parseInt(ggA));
+      const dataB = new Date(parseInt(yyyyB), parseInt(mmB) - 1, parseInt(ggB));
+      return dataB - dataA;
+    })
     .forEach(data => {
       const card = document.createElement("div");
       card.className = "card";
@@ -192,27 +190,19 @@ function mostraRiepilogo() {
       const createBox = (tipoObj, tipo) => {
         const box = document.createElement("div");
         box.className = "entry-exit-box";
-        box.classList.add(tipo.toLowerCase()); // "entrata" o "uscita"
+        box.classList.add(tipo.toLowerCase());
 
-        // Titolo tipo (centrato, colore + contorno nero)
         const tipoTitolo = document.createElement("div");
         tipoTitolo.textContent = tipo.toUpperCase();
 
-        // Ora (centrata, nero)
         const oraDiv = document.createElement("div");
         oraDiv.textContent = tipoObj.ora;
         oraDiv.className = "ora";
 
-        // Descrizione solo se presente, tra parentesi
         const descDiv = document.createElement("div");
-        if (tipoObj.descrizione && tipoObj.descrizione.trim().length > 0) {
-          descDiv.textContent = `(${tipoObj.descrizione.trim()})`;
-        } else {
-          descDiv.textContent = "";
-        }
+        descDiv.textContent = tipoObj.descrizione ? `(${tipoObj.descrizione.trim()})` : "";
         descDiv.className = "descrizione";
 
-        // Bottoni più piccoli, affiancati e centrati
         const azioni = document.createElement("div");
         azioni.className = "azioni";
 
@@ -236,7 +226,6 @@ function mostraRiepilogo() {
         azioni.appendChild(btnMod);
         azioni.appendChild(btnDel);
 
-        // Ordine nel box
         box.appendChild(tipoTitolo);
         box.appendChild(oraDiv);
         box.appendChild(descDiv);
@@ -245,7 +234,6 @@ function mostraRiepilogo() {
         return box;
       };
 
-      // Ordina per far sempre vedere prima Entrata, poi Uscita (se ci sono)
       const entrataObj = perData[data].find(e => e.tipo === "Entrata");
       const uscitaObj = perData[data].find(e => e.tipo === "Uscita");
 
@@ -298,12 +286,17 @@ function modificaTimbratura(t) {
   contaCaratteri.innerText = `${t.descrizione.length}/50 caratteri`;
   modificaIndex = timbrature.indexOf(t);
 
-  // Mostra il form personalizzato
   boxPersonalizza.style.display = "block";
   btnAnnulla.disabled = false;
   controllaSalvabilita();
 
-  // Scrolla il form in vista
+  // Centra tutto tranne descrizione
+  const inputs = boxPersonalizza.querySelectorAll("input, select");
+  inputs.forEach(inp => {
+    if(inp.id !== "descrizione") inp.style.textAlign = "center";
+    else inp.style.textAlign = "left";
+  });
+
   boxPersonalizza.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
