@@ -52,4 +52,12 @@ Una volta aggiunta, apparirà un’icona sulla schermata Home e l’app si aprir
 7️⃣ **STILE E INTERFACCIA**  
 - Layout mobile-friendly, colori chiari e pulsanti intuitivi;  
 - Entrata in verde, Uscita in rosso;  
-- Descrizioni e ore ben visibili, riepilogo ordinato e leggibile.  
+- Descrizioni e ore ben visibili, riepilogo ordinato e leggibile.
+
+---
+
+<img width="454" height="862" alt="image" src="https://github.com/user-attachments/assets/32013459-f72a-4bc2-a2c7-7305f15d9ed8" />
+
+---
+
+<img width="421" height="661" alt="image" src="https://github.com/user-attachments/assets/1331c2b1-c5f6-4db3-bd6d-d4d6667bb4cf" />
