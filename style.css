@@ -430,3 +430,22 @@ button {
   min-width: 60px;       /* larghezza minima, cambia se serve */
   box-sizing: border-box;
 }
+
+/* Forza bordi sugli input e select */
+#boxPersonalizza input,
+#boxPersonalizza select {
+  border: 1px solid #000; /* nero, o il colore che vuoi */
+  border-radius: 4px; /* arrotondato leggermente */
+  outline: none;
+  padding: 8px 10px;
+  box-sizing: border-box;
+  -webkit-appearance: none; /* rimuove stile nativo iOS */
+  -moz-appearance: none; /* rimuove stile nativo Firefox */
+  appearance: none; /* rimuove stile di default */
+}
+
+/* Se vuoi il focus più evidente */
+#boxPersonalizza input:focus,
+#boxPersonalizza select:focus {
+  border-color: #00796b;
+}
