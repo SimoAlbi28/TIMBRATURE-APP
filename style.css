@@ -449,3 +449,19 @@ button {
 #boxPersonalizza select:focus {
   border-color: #00796b;
 }
+
+/* Centra il testo selezionato e il placeholder del select su tutti i browser */
+#boxPersonalizza select {
+  text-align: center;            /* centra il testo normale */
+  text-align-last: center;       /* Chrome, Firefox per l'opzione selezionata */
+  -moz-text-align-last: center;  /* Firefox */
+  -webkit-appearance: none;      /* rimuove stile nativo iOS */
+  -moz-appearance: none;         /* rimuove stile nativo Firefox */
+  appearance: none;              /* rimuove stile di default */
+}
+
+/* Placeholder "-- Seleziona --" centrato su iOS Safari */
+#boxPersonalizza select option[value=""] {
+  text-align: center;
+}
+
