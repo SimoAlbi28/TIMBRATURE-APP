@@ -261,7 +261,7 @@ function mostraRiepilogo() {
         card.appendChild(separatore2);
 
         const totOre = document.createElement("p");
-        totOre.textContent = `⏳ Totale ore-minuti di lavoro: ${diffH}h ${diffM}m ⏳`;
+        totOre.textContent = `⏳ Totale ore-minuti di lavoro: ${diffH}h ${diffM}m `;
         totOre.style.cssText = `
           font-weight: bold;
           margin-top: 10px;
