@@ -1,7 +1,7 @@
 {
   "name": "Timbrature Lavoro",
   "short_name": "Timbrature",
-  "start_url": "/timbrature-app",
+  "start_url": "/timbrature-app/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4caf50",
